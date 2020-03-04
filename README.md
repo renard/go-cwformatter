@@ -7,8 +7,9 @@ cwformatter
 [![GoDoc][godoc-img]][godoc-url]
 [![License: WTFPL][license-img]][license-url]
 
-Package cwformatter is a simple lorus formatter to display color logs (if
-possible, no color is used if output is piped) to the terminal.
+Package cwformatter is a simple [lorus](https://github.com/sirupsen/logrus)
+formatter to display color logs (if possible, no color is used if output is
+piped) to the terminal.
 
 # Example
 
