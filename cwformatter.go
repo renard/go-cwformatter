@@ -1,7 +1,7 @@
 // Copyright © 2020 Sébastien Gross
 //
 // Created: 2020-02-25
-// Last changed: 2020-03-04 21:47:41
+// Last changed: 2020-03-04 23:17:30
 //
 // This program is free software. It comes without any warranty, to
 // the extent permitted by applicable law. You can redistribute it
@@ -175,23 +175,8 @@ func (f *CWFormatter) Format(entry *logrus.Entry) (b []byte, err error) {
 		l++
 	}
 
-	var color aurora.Color
-	switch entry.Level {
-	case logrus.PanicLevel:
-		color = f.PanicColor
-	case logrus.FatalLevel:
-		color = f.FatalColor
-	case logrus.ErrorLevel:
-		color = f.ErrorColor
-	case logrus.WarnLevel:
-		color = f.WarnColor
-	case logrus.InfoLevel:
-		color = f.InfoColor
-	case logrus.DebugLevel:
-		color = f.DebugColor
-	case logrus.TraceLevel:
-		color = f.TraceColor
-	}
+	// Separate function to reduce gocyclo complexity
+	color := f.color(entry.Level)
 
 	fmt.Fprintf(buf, "%s", au.Colorize(entry.Message, color))
 	l += len(entry.Message)
@@ -220,6 +205,27 @@ func (f *CWFormatter) Format(entry *logrus.Entry) (b []byte, err error) {
 	buf.WriteByte('\n')
 	b = buf.Bytes()
 
+	return
+}
+
+// color returns the defined color for loglevel l.
+func (f *CWFormatter) color(l logrus.Level) (color aurora.Color) {
+	switch l {
+	case logrus.PanicLevel:
+		color = f.PanicColor
+	case logrus.FatalLevel:
+		color = f.FatalColor
+	case logrus.ErrorLevel:
+		color = f.ErrorColor
+	case logrus.WarnLevel:
+		color = f.WarnColor
+	case logrus.InfoLevel:
+		color = f.InfoColor
+	case logrus.DebugLevel:
+		color = f.DebugColor
+	case logrus.TraceLevel:
+		color = f.TraceColor
+	}
 	return
 }
 
