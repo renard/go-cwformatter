@@ -98,3 +98,72 @@ func TestHooks(t *testing.T) {
 	}
 
 }
+
+func BenchmarkSimple(b *testing.B) {
+	// b := &bytes.Buffer{}
+	// l.Out = b
+	f := NewFormatter()
+	f.Timeformat = ""
+	f.FieldsColumn = 30
+	l.Formatter = f
+	for i := 0; i < b.N; i++ {
+		l.Info("Message")
+	}
+}
+
+func BenchmarkFields(b *testing.B) {
+	// b := &bytes.Buffer{}
+	// l.Out = b
+	f := NewFormatter()
+	f.Timeformat = ""
+	f.FieldsColumn = 30
+	l.Formatter = f
+	for i := 0; i < b.N; i++ {
+		l.WithFields(log.Fields{
+			"f1": "v1",
+			"f2": "v2",
+		}).Info("Message")
+	}
+}
+
+func BenchmarkCommandStart(b *testing.B) {
+	// b := &bytes.Buffer{}
+	// l.Out = b
+	f := NewFormatter()
+	f.Timeformat = ""
+	f.FieldsColumn = 30
+	l.Formatter = f
+	for i := 0; i < b.N; i++ {
+		l.WithFields(log.Fields{
+			"COMMAND_START": "ls",
+		}).Info("Message")
+	}
+}
+
+func BenchmarkCommandResultOK(b *testing.B) {
+	// b := &bytes.Buffer{}
+	// l.Out = b
+	f := NewFormatter()
+	f.Timeformat = ""
+	f.FieldsColumn = 30
+	l.Formatter = f
+	for i := 0; i < b.N; i++ {
+		l.WithFields(log.Fields{
+			"COMMAND_RESULT": 0,
+		}).Info("Message")
+	}
+}
+
+func BenchmarkCommandResultFail(b *testing.B) {
+	// b := &bytes.Buffer{}
+	// l.Out = b
+	f := NewFormatter()
+	f.Timeformat = ""
+	f.FieldsColumn = 30
+	l.Formatter = f
+	for i := 0; i < b.N; i++ {
+		l.WithFields(log.Fields{
+			"COMMAND_RESULT": 1,
+		}).Info("Message")
+	}
+}
