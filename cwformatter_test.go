@@ -2,7 +2,6 @@ package cwformatter
 
 import (
 	"bytes"
-	"os"
 	"testing"
 
 	log "github.com/sirupsen/logrus"

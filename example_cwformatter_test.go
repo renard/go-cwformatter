@@ -1,13 +1,16 @@
-// +build example
-
 package cwformatter
+
+import (
+	log "github.com/sirupsen/logrus"
+	"os"
+)
 
 // Simple test to display an example on the screen
 //
 // Run this file using: go test -tags example
-func init() {
-	Example_invoke()
-}
+// func init() {
+// 	Example_invoke()
+// }
 
 // Example on how to invoke CWFormatter
 func Example_invoke() {
