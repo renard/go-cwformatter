@@ -5,13 +5,6 @@ import (
 	"os"
 )
 
-// Simple test to display an example on the screen
-//
-// Run this file using: go test -tags example
-// func init() {
-// 	Example_invoke()
-// }
-
 // Example on how to invoke CWFormatter
 func Example_invoke() {
 	l := log.New()
@@ -20,7 +13,6 @@ func Example_invoke() {
 	l.Formatter = f
 
 	l.SetLevel(log.TraceLevel)
-	// l.SetFormatter(new(ColorFormatter))
 	l.Trace("Trace: Something very low level.")
 	l.Debug("Debug: Useful debugging information.")
 	l.Info("Info: Something noteworthy happened!")
