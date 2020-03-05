@@ -3,7 +3,7 @@ cwformatter
 
 [![Go Report Card][goreport-img]][goreport-url]
 [![Build status][build-img]][build-url]
-[![Coverage report][cover-img]][cover-url]
+[![Coverage Status][cover-img]][cover-url]
 [![GoDoc][godoc-img]][godoc-url]
 [![License: WTFPL][license-img]][license-url]
 
