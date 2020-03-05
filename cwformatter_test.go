@@ -3,6 +3,7 @@ package cwformatter
 import (
 	"bytes"
 	"os"
+	"sync"
 	"testing"
 
 	"github.com/logrusorgru/aurora"
@@ -22,13 +23,20 @@ func initLogger() *log.Logger {
 	return l
 }
 
+var mu sync.Mutex
+
 func doLog(l *log.Logger, fct runFunc, input string) string {
 	b := &bytes.Buffer{}
-	l.Out = b
 
+	mu.Lock()
+	_o := l.Out
+	l.Out = b
 	fct(input)
+	l.Out = _o
+	mu.Unlock()
 
 	bs := b.String()
+
 	lbs := len(bs)
 	if lbs > 0 {
 		lbs--
@@ -123,13 +131,13 @@ func TestHooks(t *testing.T) {
 			"Message", `Message                       | COMMAND_START="ls"`,
 			func() { f.DeleteHook("COMMAND_START") }},
 
-		{"Without COMMAND_START", l.WithFields(log.Fields{"COMMAND_START": "ls"}).Info,
-			"", `COMMAND_START="ls"`,
-			func() { f.DeleteHook("COMMAND_START") }},
-
 		{"With COMMAND_START", l.WithFields(log.Fields{"COMMAND_START": "ls"}).Info,
 			"Message", `Message                       | Running ls`,
 			func() { f.AddHook("COMMAND_START", commandStart) }},
+
+		{"Without COMMAND_START", l.WithFields(log.Fields{"COMMAND_START": "ls"}).Info,
+			"", `COMMAND_START="ls"`,
+			func() { f.DeleteHook("COMMAND_START") }},
 
 		{"With COMMAND_START", l.WithFields(log.Fields{"COMMAND_START": "ls"}).Info,
 			"", `Running ls`,
@@ -138,6 +146,7 @@ func TestHooks(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.n, func(t *testing.T) {
+			t.Parallel()
 			test.pre()
 			got := doLog(l, test.f, test.in)
 			if got != test.want {
