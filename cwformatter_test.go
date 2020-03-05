@@ -114,6 +114,12 @@ func TestTerminal(t *testing.T) {
 	l.Warn("Foo")
 }
 
+func TestModHooks(t *testing.T) {
+	f := NewFormatter()
+	f.DeleteHook("COMMAND_START")
+	f.AddHook("COMMAND_START", commandStart)
+}
+
 func TestHooks(t *testing.T) {
 	f := NewFormatter()
 	f.Timeformat = ""
