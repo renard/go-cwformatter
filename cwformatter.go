@@ -1,7 +1,7 @@
 // Copyright © 2020 Sébastien Gross
 //
 // Created: 2020-02-25
-// Last changed: 2020-03-04 23:17:30
+// Last changed: 2020-03-05 00:26:05
 //
 // This program is free software. It comes without any warranty, to
 // the extent permitted by applicable law. You can redistribute it
@@ -16,10 +16,12 @@ package cwformatter
 import (
 	"bytes"
 	"fmt"
+	"os"
+	"sync"
+
 	"github.com/logrusorgru/aurora"
 	"github.com/mattn/go-isatty"
 	"github.com/sirupsen/logrus"
-	"os"
 )
 
 // CWFormatter holds the formatter setup.
@@ -52,6 +54,7 @@ type CWFormatter struct {
 	// fieldsHooks is a string map of functions triggered by a special
 	// field.
 	fieldsHooks map[string]fieldHookFunc
+	mu          sync.Mutex
 }
 
 // fieldHookFunc defines a function signature suitable to execute a hook
@@ -232,7 +235,9 @@ func (f *CWFormatter) color(l logrus.Level) (color aurora.Color) {
 // AddHook adds or replaces fct function to the fieldsHooks map for given
 // field. One an only one function can be defined for one field.
 func (f *CWFormatter) AddHook(field string, fct fieldHookFunc) {
+	f.mu.Lock()
 	f.fieldsHooks[field] = fct
+	f.mu.Unlock()
 }
 
 // DeleteHook deletes hook function for given field. If field was not set,
@@ -240,6 +245,8 @@ func (f *CWFormatter) AddHook(field string, fct fieldHookFunc) {
 func (f *CWFormatter) DeleteHook(field string) {
 	_, ok := f.fieldsHooks[field]
 	if ok {
+		f.mu.Lock()
 		delete(f.fieldsHooks, field)
+		f.mu.Unlock()
 	}
 }
