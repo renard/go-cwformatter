@@ -1,7 +1,7 @@
 // Copyright © 2020 Sébastien Gross
 //
 // Created: 2020-02-25
-// Last changed: 2020-03-05 00:26:05
+// Last changed: 2020-03-05 03:06:27
 //
 // This program is free software. It comes without any warranty, to
 // the extent permitted by applicable law. You can redistribute it
@@ -194,7 +194,10 @@ func (f *CWFormatter) Format(entry *logrus.Entry) (b []byte, err error) {
 			buf.WriteByte(' ')
 		}
 
-		if fct := f.fieldsHooks[k]; fct != nil {
+		f.mu.Lock()
+		fct := f.fieldsHooks[k]
+		f.mu.Unlock()
+		if fct != nil {
 			fct(f, buf, v, au)
 			//break
 		} else {
